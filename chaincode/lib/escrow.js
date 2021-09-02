@@ -10,7 +10,7 @@ const { Contract } = require('fabric-contract-api');
 
 class Escrow extends Contract {
 
-    async depositBuyer(ctx, key, buyerId, sellerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, orderCancelAvailableWithin, deliveryDate, isSellerDeposited, fundReleaseKey) {
+    async depositBuyer(ctx, key, buyerId, sellerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, orderCancelAvailableWithin, deliveryDate, productStatus, fundReleaseKey) {
 
 
         const buyer = {
@@ -23,7 +23,7 @@ class Escrow extends Contract {
             DepositTime: depositTime,
             OrderCancelAvailableWithin: orderCancelAvailableWithin,
             DeliveryDate: deliveryDate,
-            IsSellerDeposited: isSellerDeposited,
+            ProductStatus: productStatus,
             FundReleaseKey : fundReleaseKey,
         };
 
@@ -32,7 +32,7 @@ class Escrow extends Contract {
         return JSON.stringify(buyer);
     }
 
-    async depositSeller(ctx, key, sellerId, buyerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, isSellerDeposited){
+    async depositSeller(ctx, key, sellerId, buyerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, productStatus){
         const seller = {
             Key : key,
             SellerId : sellerId, 
@@ -41,15 +41,35 @@ class Escrow extends Contract {
             DepositTransactionId : depositTransactionId,
             DepositPaymentAmount : depositPaymentAmount,
             DepositTime : depositTime,
-            IsSellerDeposited : isSellerDeposited,
+            ProductStatus : productStatus,
         };
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(seller)));
         return JSON.stringify(seller);
     }
 
+    async updateProductStatus(ctx, key, newProductStatus){
+
+        const fileJSON = await ctx.stub.getState(key);
+
+        if (!fileJSON || fileJSON.length === 0) {
+            throw new Error('The order does not exist');
+        }
+
+        let status = JSON.parse(fileJSON.toString());
+        status.ProductStatus = newProductStatus;
+
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(status)));
+        return JSON.stringify(status);
+
+
+    }
+
 
 
 }
+
+// ./network.sh deployCC -c escrow -ccn escrow1 -ccp ../../escrow/chaincode/ -ccl javascript
 
 module.exports = Escrow;

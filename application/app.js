@@ -13,7 +13,7 @@ const { buildCAClient, registerAndEnrollUser, enrollAdmin } = require('../../fab
 const { buildCCPOrg1, buildWallet } = require('../../fabric-samples/test-application/javascript/AppUtil.js');
 
 const channelName = 'escrow';
-const chaincodeName = 'escrow';
+const chaincodeName = 'escrow4';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
 const org1UserId = 'appUser';
@@ -134,42 +134,53 @@ function prettyJSONString(inputString) {
 					dateTime,
 					'1',
 					'7/09/2021',
-					'false',
+					'Buyer Deposited, Order Pending for sellers deposit',
 					fundReleaseKey,
 				);
 
-				// await contract.submitTransaction(
-				// 	'depositBuyer',
-				// 	'buyer_tx1',
-				// 	'b1',
-				// 	's1',
-				// 	'o1',
-				// 	'tx1',
-				// 	'50',
-				// 	dateTime,
-				// 	true,
-				// 	'7/09/2021',
-				// 	false
-				// );
+				await contract.submitTransaction(
+					'depositBuyer',
+					'b1_o1_tx1',
+					'b1',
+					's1',
+					'o1',
+					'tx1',
+					'50',
+					dateTime,
+					'1',
+					'7/09/2021',
+					'Buyer Deposited, Order Pending for sellers deposit',
+					fundReleaseKey,
+				);
 				console.log(`Buyers deposit succesful:   Result  ${result} \n\n`);
 
 			} catch (error) {
 				console.log(`*** error: \n    ${error}`);
 			}
 
-			// try {
-			// 	let today = new Date();
-			// 	let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-			// 	let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-			// 	let dateTime = date+' '+time;
+			try {
+				let today = new Date();
+				let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+				let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+				let dateTime = date+' '+time;
 
-			// 	let result = await contract.evaluateTransaction('depositSeller','seller_tx1', 's1', 'b1', 'o1', 'tx2', '50', dateTime);
-			// 	await contract.submitTransaction('depositSeller','seller_tx1', 's1', 'b1', 'o1', 'tx2', '50', dateTime);
-			// 	console.log(`Sellers deposit succesful:   Result  ${result} \n\n`);
+				let result = await contract.evaluateTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', '50', dateTime, 'Seller Deposited, order confirmed');
+				await contract.submitTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', '50', dateTime, 'Seller Deposited, order confirmed');
+				console.log(`Sellers deposit succesful:   Result  ${result} \n\n`);
 
-			// } catch (error) {
-			// 	console.log(`*** error: \n    ${error}`);
-			// }
+			} catch (error) {
+				console.log(`*** error: \n    ${error}`);
+			}
+
+			try {
+
+				let result = await contract.evaluateTransaction('updateProductStatus', 'b1_o1_tx1', 'order_shipped.');
+				await contract.submitTransaction('updateProductStatus', 'b1_o1_tx1', 'order_shipped.');
+				console.log(`Order Status updated:  Result  ${result} \n\n`);
+
+			} catch (error) {
+				console.log(`*** error: \n    ${error}`);
+			}
 
 		} finally {
 			
