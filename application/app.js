@@ -172,15 +172,25 @@ function prettyJSONString(inputString) {
 				console.log(`*** error: \n    ${error}`);
 			}
 
-			// try {
+			try {
 
-			// 	let result = await contract.evaluateTransaction('updateProductStatus', 'b1_o1_tx1', 'order_shipped.');
-			// 	await contract.submitTransaction('updateProductStatus', 'b1_o1_tx1', 'order_shipped.');
-			// 	console.log(`Order Status updated:  Result  ${result} \n\n`);
+				let result = await contract.evaluateTransaction('updateProductStatus', 's1_o1_tx2', 'order_shipped.');
+				await contract.submitTransaction('updateProductStatus', 's1_o1_tx2', 'order_shipped.');
+				console.log(`Order Status updated:  Result  ${result} \n\n`);
 
-			// } catch (error) {
-			// 	console.log(`*** error: \n    ${error}`);
-			// }
+			} catch (error) {
+				console.log(`*** error: \n    ${error}`);
+			}
+
+			try {
+
+				let result = await contract.evaluateTransaction('updateProductStatus', 's1_o1_tx2', 'order_shipped.');
+				await contract.submitTransaction('updateProductStatus', 'b1_o1_tx1', 'order_shipped.');
+				console.log(`Order Status updated:  Result  ${result} \n\n`);
+
+			} catch (error) {
+				console.log(`*** error: \n    ${error}`);
+			}
 
 		} finally {
 			
