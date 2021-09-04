@@ -10,7 +10,21 @@ const { Contract } = require('fabric-contract-api');
 
 class Escrow extends Contract {
 
-    async depositBuyer(ctx, key, buyerId, sellerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, orderCancelAvailableWithin, deliveryDate, productStatus, fundReleaseKey) {
+    async createOrder(ctx,key, sellerId, buyerId, orderStatus, orderCancelAvailableWithin){
+
+        const order = {
+            Key : key,
+            SellerId : sellerId,
+            BuyerId : buyerId,
+            OrderStatus : orderStatus,
+            OrderCancelAvailableWithin: orderCancelAvailableWithin,
+        };
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(order)));
+        return JSON.stringify(order);
+    }
+
+    async depositBuyer(ctx, key, buyerId, sellerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, deliveryDate, fundReleaseKey) {
 
 
         const buyer = {
@@ -21,9 +35,7 @@ class Escrow extends Contract {
             DepositTransactionId: depositTransactionId,
             DepositPaymentAmount: depositPaymentAmount,
             DepositTime: depositTime,
-            OrderCancelAvailableWithin: orderCancelAvailableWithin,
             DeliveryDate: deliveryDate,
-            ProductStatus: productStatus,
             FundReleaseKey : fundReleaseKey,
         };
 
@@ -32,7 +44,7 @@ class Escrow extends Contract {
         return JSON.stringify(buyer);
     }
 
-    async depositSeller(ctx, key, sellerId, buyerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, productStatus){
+    async depositSeller(ctx, key, sellerId, buyerId, orderId, depositTransactionId, depositPaymentAmount, depositTime){
         const seller = {
             Key : key,
             SellerId : sellerId, 
@@ -41,14 +53,13 @@ class Escrow extends Contract {
             DepositTransactionId : depositTransactionId,
             DepositPaymentAmount : depositPaymentAmount,
             DepositTime : depositTime,
-            ProductStatus : productStatus,
         };
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(seller)));
         return JSON.stringify(seller);
     }
 
-    async updateProductStatus(ctx, key, newProductStatus){
+    async updateOrderStatus(ctx, key, newOrderStatus){
 
         const fileJSON = await ctx.stub.getState(key);
 
@@ -57,15 +68,47 @@ class Escrow extends Contract {
         }
 
         let status = JSON.parse(fileJSON.toString());
-        status.ProductStatus = newProductStatus;
-
+        status.OrderStatus = newOrderStatus;
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(status)));
         return JSON.stringify(status);
-
-
     }
 
+    async createDeliveryAgent(ctx, key){
+        const agent = {
+            Key : key,
+            IsAgentSelected : 'false',
+        };
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(agent)));
+        return JSON.stringify(agent);
+    }
+    /////////////////////////
+    async assignDeliveryAgent(ctx, key, orderId){
+        const assignAgent = {
+            Key : key,
+            OrderId : orderId,
+        };
+
+
+        const fileJSON = await ctx.stub.getState(key);
+        
+
+        if (!fileJSON || fileJSON.length === 0) {
+            throw new Error('The agent does not exist');
+        }
+
+        let status = JSON.parse(fileJSON.toString());
+        let isAgentSelected = 'true';
+        status.IsAgentSelected = isAgentSelected;
+
+        const fileJSON2 = await ctx.stub.getState(orderId);
+        let orderStatus = `Product handed to delivery ageny ${key}`;
+        status.OrderStatus = orderStatus;
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(assignAgent)));
+        return JSON.stringify(assignAgent);
+    }
 
 
 }

@@ -13,7 +13,7 @@ const { buildCAClient, registerAndEnrollUser, enrollAdmin } = require('../../fab
 const { buildCCPOrg1, buildWallet } = require('../../fabric-samples/test-application/javascript/AppUtil.js');
 
 const channelName = 'escrow';
-const chaincodeName = 'escrow4';
+const chaincodeName = 'escrow18';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
 const org1UserId = 'appUser';
@@ -114,6 +114,15 @@ function prettyJSONString(inputString) {
 			
 			const contract = network.getContract(chaincodeName);
 
+			try {
+
+				let result = await contract.evaluateTransaction('createOrder', 'o1', 's1', 'b1', 'order created', '1');
+				await contract.submitTransaction('createOrder', 'o1', 's1', 'b1', 'order created', '1');
+				console.log(`Order Created:  Result  ${result} \n\n`);
+
+			} catch (error) {
+				console.log(`*** error: \n    ${error}`);
+			}
 
 			try {
 				let today = new Date();
@@ -122,6 +131,8 @@ function prettyJSONString(inputString) {
 				let dateTime = date+' '+time;
 
 				let fundReleaseKey = await generateOTP();
+
+				
 
 				let result = await contract.evaluateTransaction(
 					'depositBuyer',
@@ -132,9 +143,7 @@ function prettyJSONString(inputString) {
 					'tx1',
 					'50',
 					dateTime,
-					'1',
 					'7/09/2021',
-					'Buyer Deposited, Order Pending for sellers deposit',
 					fundReleaseKey,
 				);
 
@@ -147,9 +156,7 @@ function prettyJSONString(inputString) {
 					'tx1',
 					'50',
 					dateTime,
-					'1',
 					'7/09/2021',
-					'Buyer Deposited, Order Pending for sellers deposit',
 					fundReleaseKey,
 				);
 				console.log(`Buyers deposit succesful:   Result  ${result} \n\n`);
@@ -164,8 +171,8 @@ function prettyJSONString(inputString) {
 				let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
 				let dateTime = date+' '+time;
 
-				let result = await contract.evaluateTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', '50', dateTime, 'Seller Deposited, order confirmed');
-				await contract.submitTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', '50', dateTime, 'Seller Deposited, order confirmed');
+				let result = await contract.evaluateTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', '50', dateTime);
+				await contract.submitTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', '50', dateTime);
 				console.log(`Sellers deposit succesful:   Result  ${result} \n\n`);
 
 			} catch (error) {
@@ -174,9 +181,20 @@ function prettyJSONString(inputString) {
 
 			try {
 
-				let result = await contract.evaluateTransaction('updateProductStatus', 's1_o1_tx2', 'order_shipped.');
-				await contract.submitTransaction('updateProductStatus', 's1_o1_tx2', 'order_shipped.');
+				let result = await contract.evaluateTransaction('updateOrderStatus', 'o1', 'order_shipped.');
+				await contract.submitTransaction('updateOrderStatus', 'o1', 'order_shipped.');
 				console.log(`Order Status updated:  Result  ${result} \n\n`);
+
+			} catch (error) {
+				console.log(`*** error: \n    ${error}`);
+			}
+
+
+			try {
+
+				let result = await contract.evaluateTransaction('createDeliveryAgent', 'a1');
+				await contract.submitTransaction('createDeliveryAgent', 'a1')
+				console.log(`Agent Created:  Result  ${result} \n\n`);
 
 			} catch (error) {
 				console.log(`*** error: \n    ${error}`);
@@ -184,9 +202,9 @@ function prettyJSONString(inputString) {
 
 			try {
 
-				let result = await contract.evaluateTransaction('updateProductStatus', 's1_o1_tx2', 'order_shipped.');
-				await contract.submitTransaction('updateProductStatus', 'b1_o1_tx1', 'order_shipped.');
-				console.log(`Order Status updated:  Result  ${result} \n\n`);
+				let result = await contract.evaluateTransaction('assignDeliveryAgent', 'a1', 'o1');
+				await contract.submitTransaction('assignDeliveryAgent', 'a1', 'o1');
+				console.log(`Agent Assigned:  Result  ${result} \n\n`);
 
 			} catch (error) {
 				console.log(`*** error: \n    ${error}`);
