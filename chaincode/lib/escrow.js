@@ -10,22 +10,24 @@ const { Contract } = require('fabric-contract-api');
 
 class Escrow extends Contract {
 
-    async createOrder(ctx,key, sellerId, buyerId, orderStatus, orderCancelAvailableWithin){
+    async createOrder(ctx, key, sellerId, buyerId, OrderDeliveryDate){
 
         const order = {
             Key : key,
             SellerId : sellerId,
             BuyerId : buyerId,
-            OrderStatus : orderStatus,
-            OrderCancelAvailableWithin: orderCancelAvailableWithin,
+            OrderStatus : 'order created',
+            OrderDeliveryDate : OrderDeliveryDate,
+            IsOrderDeliveried : 'false',
+            IsOrderCancelled : 'false',
+            AgentId : 'not Selected Yet',
         };
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(order)));
         return JSON.stringify(order);
     }
 
-    async depositBuyer(ctx, key, buyerId, sellerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, deliveryDate, fundReleaseKey) {
-
+    async depositBuyer(ctx, key, buyerId, sellerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, fundReleaseKey) {
 
         const buyer = {
             Key: key,
@@ -35,10 +37,8 @@ class Escrow extends Contract {
             DepositTransactionId: depositTransactionId,
             DepositPaymentAmount: depositPaymentAmount,
             DepositTime: depositTime,
-            DeliveryDate: deliveryDate,
             FundReleaseKey : fundReleaseKey,
         };
-
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(buyer)));
         return JSON.stringify(buyer);
@@ -64,7 +64,7 @@ class Escrow extends Contract {
         const fileJSON = await ctx.stub.getState(key);
 
         if (!fileJSON || fileJSON.length === 0) {
-            throw new Error('The order does not exist');
+            throw new Error(`The order ${key} does not exist`);
         }
 
         let status = JSON.parse(fileJSON.toString());
@@ -72,6 +72,21 @@ class Escrow extends Contract {
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(status)));
         return JSON.stringify(status);
+    }
+
+    async updateOrderAgentId(ctx, key, assignedAgentId){
+
+        const fileJSON = await ctx.stub.getState(key);
+
+        if (!fileJSON || fileJSON.length === 0) {
+            throw new Error(`The order ${key} does not exist`);
+        }
+
+        let agentId = JSON.parse(fileJSON.toString());
+        agentId.AgentId = assignedAgentId;
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(agentId)));
+        return JSON.stringify(agentId);
     }
 
     async createDeliveryAgent(ctx, key){
@@ -83,31 +98,39 @@ class Escrow extends Contract {
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(agent)));
         return JSON.stringify(agent);
     }
-    /////////////////////////
+
     async assignDeliveryAgent(ctx, key, orderId){
-        const assignAgent = {
-            Key : key,
-            OrderId : orderId,
-        };
 
+        let updatedAgentStatus = await this.updateOrderAgentId(ctx, orderId, key);
 
+        if(updatedAgentStatus){
+            const fileJSON = await ctx.stub.getState(key);
+            if (!fileJSON || fileJSON.length === 0) {
+                throw new Error('The agent does not exist');
+            }
+            
+            let agentStatus = JSON.parse(fileJSON.toString());
+            agentStatus.IsAgentSelected = 'true';
+
+            await ctx.stub.putState(key, Buffer.from(JSON.stringify(agentStatus)));
+            return JSON.stringify(agentStatus);
+        }
+    }
+
+    // cancel order
+
+    async cancelOrder(ctx, key){
         const fileJSON = await ctx.stub.getState(key);
-        
 
         if (!fileJSON || fileJSON.length === 0) {
-            throw new Error('The agent does not exist');
+            throw new Error(`The order ${key} does not exist`);
         }
 
-        let status = JSON.parse(fileJSON.toString());
-        let isAgentSelected = 'true';
-        status.IsAgentSelected = isAgentSelected;
+        let orderCancelStatus = JSON.parse(fileJSON.toString());
+        orderCancelStatus.IsOrderCancelled = 'true';
 
-        const fileJSON2 = await ctx.stub.getState(orderId);
-        let orderStatus = `Product handed to delivery ageny ${key}`;
-        status.OrderStatus = orderStatus;
-
-        await ctx.stub.putState(key, Buffer.from(JSON.stringify(assignAgent)));
-        return JSON.stringify(assignAgent);
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(orderCancelStatus)));
+        return JSON.stringify(orderCancelStatus);
     }
 
 
