@@ -29,23 +29,23 @@ class Escrow extends Contract {
 
     async depositBuyer(ctx, key, buyerId, sellerId, orderId, depositTransactionId, depositPaymentAmount, depositTime, fundReleaseKey) {
 
-        const buyer = {
+        const buyerDeposit = {
             Key: key,
             BuyerId: buyerId,
             SellerId: sellerId,
-            orderId: orderId,
+            OrderId: orderId,
             DepositTransactionId: depositTransactionId,
             DepositPaymentAmount: depositPaymentAmount,
             DepositTime: depositTime,
             FundReleaseKey : fundReleaseKey,
         };
 
-        await ctx.stub.putState(key, Buffer.from(JSON.stringify(buyer)));
-        return JSON.stringify(buyer);
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(buyerDeposit)));
+        return JSON.stringify(buyerDeposit);
     }
 
     async depositSeller(ctx, key, sellerId, buyerId, orderId, depositTransactionId, depositPaymentAmount, depositTime){
-        const seller = {
+        const sellerDeposit = {
             Key : key,
             SellerId : sellerId, 
             BuyerId : buyerId,
@@ -55,8 +55,12 @@ class Escrow extends Contract {
             DepositTime : depositTime,
         };
 
-        await ctx.stub.putState(key, Buffer.from(JSON.stringify(seller)));
-        return JSON.stringify(seller);
+        let sellerDepositStatus = await ctx.stub.putState(key, Buffer.from(JSON.stringify(sellerDeposit)));
+        
+        if(sellerDepositStatus){
+            await this.updateOrderStatus(ctx, orderId, "Seller Deposited, Order Confirmed");
+        }
+        return JSON.stringify(sellerDeposit);
     }
 
     async updateOrderStatus(ctx, key, newOrderStatus){
@@ -131,6 +135,40 @@ class Escrow extends Contract {
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(orderCancelStatus)));
         return JSON.stringify(orderCancelStatus);
+    }
+
+    async getBuyersReleaseFundKey(ctx, buyerDepositId){
+        const fileJSON = await ctx.stub.getState(buyerDepositId);
+        if (!fileJSON || fileJSON.length === 0) {
+            throw new Error(`The order ${key} does not exist`);
+        }
+
+        let releaseFund = JSON.parse(fileJSON.toString());
+        let releaseFundKey = releaseFund.FundReleaseKey;
+
+        return JSON.stringify(releaseFundKey);
+    }
+
+    async releaseFund(ctx, key, orderId, fundReleaseKey){
+
+        let releaseKey = await this.getBuyersReleaseFundKey(ctx, key);
+
+        if(releaseKey){
+            if(releaseKey == fundReleaseKey){
+                const fileJSON = await ctx.stub.getState(orderId);
+
+                if (!fileJSON || fileJSON.length === 0) {
+                    throw new Error('The order does not exist');
+                }
+                
+                let currentOrderStatus = JSON.parse(fileJSON.toString());
+                currentOrderStatus.IsOrderDeliveried = 'true';
+                
+                await ctx.stub.putState(key, Buffer.from(JSON.stringify(currentOrderStatus)));
+                return JSON.stringify(currentOrderStatus);
+                }
+        }
+
     }
 
 

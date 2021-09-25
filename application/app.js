@@ -1,9 +1,3 @@
-/*
- * Copyright IBM Corp. All Rights Reserved.
- *
- * SPDX-License-Identifier: Apache-2.0
- */
-
 'use strict';
 
 const { Gateway, Wallets } = require('fabric-network');
@@ -11,9 +5,10 @@ const FabricCAServices = require('fabric-ca-client');
 const path = require('path');
 const { buildCAClient, registerAndEnrollUser, enrollAdmin } = require('../../fabric-samples/test-application/javascript/CAUtil.js');
 const { buildCCPOrg1, buildWallet } = require('../../fabric-samples/test-application/javascript/AppUtil.js');
+const { raw } = require('body-parser');
 
 const channelName = 'escrow';
-const chaincodeName = 'escrow12';
+const chaincodeName = 'escrow';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
 const org1UserId = 'appUser';
@@ -22,15 +17,6 @@ function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
 }
 
-async function generateOTP() {
-          
-	var digits = '0123456789';
-	let OTP = '';
-	for (let i = 0; i < 4; i++ ) {
-		OTP += digits[Math.floor(Math.random() * 10)];
-	}
-	return OTP;
-}
 
 async function main() {
 	try {
@@ -65,129 +51,129 @@ async function main() {
 
 			
 			const contract = network.getContract(chaincodeName);
+			
+			//create server
+			const express=require('express');
+			// var bodyParser = require('body-parser');
+			// const cookieParser = require('cookie-parser');
+			// const fileUpload = require('express-fileupload');
+			const path = require('path');
+			const crypto = require('crypto');
+            const fs = require('fs');
+			const util = require('util');
 
-			//create order
 
-			try {
+			let app=express();
+			const PORT=3000;
 
-				let result = await contract.evaluateTransaction('createOrder', 'o1', 's1', 'b1', '7/10/2121');
-				await contract.submitTransaction('createOrder', 'o1', 's1', 'b1', '7/10/2121');
-				console.log(` Order Created:  Result  ${result} \n\n`);
+			app.use(express.urlencoded({ extended: false }));
+			app.use(express.json());
+			app.use(express.static('public'));
 
-			} catch (error) {
-				console.log(`*** error: \n    ${error}`);
+
+
+			app.get('/',function(req,res)
+			{
+				res.send('Welcome To Escrow!');
+			});
+
+			app.post('/createOrder',async function(req,res)
+			{
+				const {key, sellerId, buyerId, orderDeliveryDate} = req.body;
+				
+				try {
+					let result = await contract.evaluateTransaction(
+						'createOrder',
+						key,
+						sellerId,
+						buyerId,
+						orderDeliveryDate
+					);
+
+					await contract.submitTransaction(	
+						'createOrder',
+						key,
+						sellerId,
+						buyerId,
+						orderDeliveryDate
+					);
+					
+					res.send(result.toString());
+	
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
+			async function generateOTP() {
+          
+				var digits = '0123456789';
+				let OTP = '';
+				for (let i = 0; i < 4; i++ ) {
+					OTP += digits[Math.floor(Math.random() * 10)];
+				}
+				return OTP;
 			}
-
-			//Buyer deposit
-
-			try {
+			
+			async function getCurrentTime() {
 				let today = new Date();
 				let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
 				let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-				let dateTime = date+' '+time;
+				let currentTime = date+' '+time;
+				return currentTime;
+			}
+
+			app.post('/depositBuyer',async function(req,res)
+			{
+				const {key, buyerId, sellerId, orderId, depositTransactionId, depositPaymentAmount} = req.body;
 
 				let fundReleaseKey = await generateOTP();
+				let depositTime = await getCurrentTime();
 
-				let result = await contract.evaluateTransaction('depositBuyer', 'b1_o1_tx1', 'b1', 's1', 'o1', 'tx1', '50', dateTime, fundReleaseKey,);
-				await contract.submitTransaction( 'depositBuyer', 'b1_o1_tx1', 'b1', 's1', 'o1', 'tx1', '50', dateTime, fundReleaseKey,);
+				try {
+					let result = await contract.evaluateTransaction(
+						'depositBuyer',
+						key,
+						buyerId,
+						sellerId,
+						orderId,
+						depositTransactionId,
+						depositPaymentAmount,
+						depositTime,
+						fundReleaseKey
+						);
 
-				console.log(`Buyers deposit succesful:   Result  ${result} \n\n`);
-
-			} catch (error) {
-				console.log(`*** error: \n    ${error}`);
-			}
-
-			//seller deposit
+					await contract.submitTransaction(	
+						'depositBuyer',
+						key,
+						buyerId,
+						sellerId,
+						orderId,
+						depositTransactionId,
+						depositPaymentAmount,
+						depositTime,
+						fundReleaseKey
+					);
+					
+					res.send(result.toString());
+	
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
 			
-			// try {
-			// 	let today = new Date();
-			// 	let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-			// 	let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-			// 	let dateTime = date+' '+time;
+			var server=app.listen(3000,function() {
+				console.log(`server listening on Port: ${PORT}`);
+		});
+	} finally {
 
-			// 	let result = await contract.evaluateTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', '50', dateTime);
-			// 	await contract.submitTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', '50', dateTime);
-				
-			// 	console.log(`Sellers deposit succesful:   Result  ${result} \n\n`);
-
-			// } catch (error) {
-			// 	console.log(`*** error: \n    ${error}`);
-			// }
-
-			//update order
+	}
+			
+		// gateway.disconnect();
 		
-			// try {
-
-			// 	let result = await contract.evaluateTransaction('updateOrderStatus', 'o1', 'order_shipped.');
-			// 	await contract.submitTransaction('updateOrderStatus', 'o1', 'order_shipped.');
-
-			// 	console.log(`Order Status updated:  Result  ${result} \n\n`);
-
-			// } catch (error) {
-			// 	console.log(`*** error: \n    ${error}`);
-			// }
-
-			//create delivery agent
-
-			// try {
-
-			// 	let result = await contract.evaluateTransaction('createDeliveryAgent', 'a1');
-			// 	await contract.submitTransaction('createDeliveryAgent', 'a1');
-
-			// 	console.log(`Agent Created:  Result  ${result} \n\n`);
-
-			// } catch (error) {
-			// 	console.log(`*** error: \n    ${error}`);
-			// }
-
-			//Assign delivery agent
-
-			// try {
-
-			// 	let result = await contract.evaluateTransaction('assignDeliveryAgent', 'a1', 'o1');
-			// 	await contract.submitTransaction('assignDeliveryAgent', 'a1', 'o1');
-
-			// 	console.log(`Agent Assigned:  Result  ${result} \n\n`);
-
-			// } catch (error) {
-			// 	console.log(`*** error: \n    ${error}`);
-			// }
-
-			//update order status
-
-			// try {
-
-			// 	let result = await contract.evaluateTransaction('updateOrderStatus', 'o1', 'order_shipped.');
-			// 	await contract.submitTransaction('updateOrderStatus', 'o1', 'order_shipped.');
-
-			// 	console.log(`Order Status updated:  Result  ${result} \n\n`);
-
-			// } catch (error) {
-			// 	console.log(`*** error: \n    ${error}`);
-			// }
-
-			//cancel order
-
-			try {
-
-				let result = await contract.evaluateTransaction('cancelOrder', 'o1');
-				await contract.submitTransaction('cancelOrder', 'o1');
-
-				console.log(`Order Status updated:  Result  ${result} \n\n`);
-
-			} catch (error) {
-				console.log(`*** error: \n    ${error}`);
-			}
-
-		} finally {
-			
-			gateway.disconnect();
-		}
-	} catch (error) {
+ 	}catch (error) {
 		console.error(`******** FAILED to run the application: ${error}`);
 	}
 }
-
-
 
 main();
