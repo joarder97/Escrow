@@ -161,10 +161,135 @@ async function main() {
 					res.status(400).send(error.toString());
 				}
 			});
+
+			app.post('/depositSeller',async function(req,res){
+				const {key, sellerId, buyerId, orderId, depositTransactionId, depositPaymentAmount} = req.body;
+
+				let depositTime = await getCurrentTime();
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'depositSeller',
+						key,
+						sellerId,
+						buyerId,
+						orderId,
+						depositTransactionId,
+						depositPaymentAmount,
+						depositTime
+						);
+
+					await contract.submitTransaction(	
+						'depositSeller',
+						key,
+						sellerId,
+						buyerId,
+						orderId,
+						depositTransactionId,
+						depositPaymentAmount,
+						depositTime
+					);
+					
+					res.send(result.toString());
+	
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
 			
+			app.post('/updateOrderStatus',async function(req,res){
+				const {key, newOrderStatus} = req.body;
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'updateOrderStatus',
+						key,
+						newOrderStatus
+						);
+
+					await contract.submitTransaction(	
+						'updateOrderStatus',
+						key,
+						newOrderStatus
+					);
+					
+					res.send(result.toString());
+
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
+			app.post('/createDeliveryAgent',async function(req,res){
+				const {key} = req.body;
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'createDeliveryAgent',
+						key
+						);
+
+					await contract.submitTransaction(	
+						'createDeliveryAgent',
+						key
+					);
+					
+					res.send(result.toString());
+
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
+			app.post('/assignDeliveryAgent',async function(req,res){
+				const {key, orderId} = req.body;
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'assignDeliveryAgent',
+						key,
+						orderId
+						);
+
+					await contract.submitTransaction(	
+						'assignDeliveryAgent',
+						key,
+						orderId
+					);
+					
+					res.send(result.toString());
+
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
+			app.post('/cancelOrder',async function(req,res){
+				const {key, orderId} = req.body;
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'cancelOrder',
+						key
+						);
+
+					await contract.submitTransaction(	
+						'cancelOrder',
+						key
+					);
+					
+					res.send(result.toString());
+
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
 			var server=app.listen(3000,function() {
-				console.log(`server listening on Port: ${PORT}`);
+			console.log(`server listening on Port: ${PORT}`);
 		});
+
+
 	} finally {
 
 	}

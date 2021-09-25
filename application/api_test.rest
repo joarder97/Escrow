@@ -25,3 +25,55 @@ content-type: application/json
     "depositTransactionId":"tx1",
     "depositPaymentAmount":50
 }
+
+###
+
+POST http://localhost:3000/depositSeller
+content-type: application/json
+
+{
+    "key":"s1_b1_o1",
+    "sellerId":"s1",
+    "buyerId":"b1",
+    "orderId":"o1",
+    "depositTransactionId":"tx1",
+    "depositPaymentAmount":50
+}
+
+###
+
+POST http://localhost:3000/updateOrderStatus
+content-type: application/json
+
+{
+    "key":"o1",
+    "newOrderStatus":"order_shipped"
+}
+
+###
+
+POST http://localhost:3000/createDeliveryAgent
+content-type: application/json
+
+{
+    "key":"a1"
+}
+
+###
+
+POST http://localhost:3000/assignDeliveryAgent
+content-type: application/json
+
+{
+    "key":"a1",
+    "orderId":"o1"
+}
+
+###
+
+POST http://localhost:3000/cancelOrder
+content-type: application/json
+
+{
+    "key":"a1"
+}
