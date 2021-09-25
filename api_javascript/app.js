@@ -61,10 +61,18 @@ async function main() {
 			const crypto = require('crypto');
             const fs = require('fs');
 			const util = require('util');
+			var cors = require('cors')
 
 
 			let app=express();
 			const PORT=3000;
+
+			app.use(cors(
+				{
+					origin:"http://localhost:3001",
+					credentials:true
+				}
+			))
 
 			app.use(express.urlencoded({ extended: false }));
 			app.use(express.json());
