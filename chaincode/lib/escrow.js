@@ -162,6 +162,7 @@ class Escrow extends Contract {
                 }
                 
                 let currentOrderStatus = JSON.parse(fileJSON.toString());
+                //call payment processing api here
                 currentOrderStatus.IsOrderDeliveried = 'true';
                 
                 await ctx.stub.putState(key, Buffer.from(JSON.stringify(currentOrderStatus)));
