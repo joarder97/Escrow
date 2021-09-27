@@ -8,6 +8,9 @@ import {
   UserOutlined,
   UploadOutlined,
   VideoCameraOutlined,
+  DollarCircleFilled,
+  EditOutlined,
+  CloseCircleOutlined,
 } from '@ant-design/icons';
 
 const { Sider } = Layout;
@@ -23,32 +26,17 @@ export default function LeftSideBar(){
               }}
             >
         
-              <h2 className="logo">Escrow</h2>
+              <h2 className="logo">Escrow Seller</h2>
 
               <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']}>
-                  <Menu.Item key="1" icon={<UserOutlined />}>
-                    Track Order
+                  <Menu.Item key="1" icon={<DollarCircleFilled />}>
+                    Deposit
                   </Menu.Item>
-                  <Menu.Item key="2" icon={<VideoCameraOutlined />}>
-                    nav 2
+                  <Menu.Item key="2" icon={<EditOutlined />}>
+                    Update Order Status
                   </Menu.Item>
-                  <Menu.Item key="3" icon={<UploadOutlined />}>
-                    nav 3
-                  </Menu.Item>
-                  <Menu.Item key="4" icon={<BarChartOutlined />}>
-                    nav 4
-                  </Menu.Item>
-                  <Menu.Item key="5" icon={<CloudOutlined />}>
-                    nav 5
-                  </Menu.Item>
-                  <Menu.Item key="6" icon={<AppstoreOutlined />}>
-                    nav 6
-                  </Menu.Item>
-                  <Menu.Item key="7" icon={<TeamOutlined />}>
-                    nav 7
-                  </Menu.Item>
-                  <Menu.Item key="8" icon={<ShopOutlined />}>
-                    nav 8
+                  <Menu.Item key="3" icon={<CloseCircleOutlined />}>
+                    Cancel Order
                   </Menu.Item>
               </Menu>
 

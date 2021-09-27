@@ -31,26 +31,6 @@ function MyApp({ Component, pageProps }) {
           <Layout>
             <LeftSideBar/>
 
-            <Layout 
-               style={{
-                position:'relative',
-                left:'500px',
-                top:'100px',
-               
-              
-              }}
-            >
-              <Space>
-                <Search
-                  placeholder="input Order Id"
-                  allowClear
-                  enterButton="track"
-                  size="large"
-                  onSearch={onSearch}
-                />
-              </Space>
-            </Layout>
-
             {/* <Layout className="site-layout" style={{ 
               marginLeft: 200,  
               position:'relative',
