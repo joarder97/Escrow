@@ -14,17 +14,18 @@ const { Sider } = Layout;
 
 export default function LeftSideBar(){
     return(
-        <Sider
-          style={{
-          overflow: 'auto',
-          height: '100vh',
-          position: 'fixed',
-          left:0,
-        }}
-        >
+            <Sider
+              style={{
+              overflow: 'auto',
+              height: '100vh',
+              position: 'fixed',
+              left:0,
+              }}
+            >
         
-        <h2 className="logo">Escrow</h2>
-                <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']}>
+              <h2 className="logo">Escrow</h2>
+
+              <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']}>
                   <Menu.Item key="1" icon={<UserOutlined />}>
                     Track Order
                   </Menu.Item>
@@ -49,7 +50,8 @@ export default function LeftSideBar(){
                   <Menu.Item key="8" icon={<ShopOutlined />}>
                     nav 8
                   </Menu.Item>
-                </Menu>
-          </Sider>
+              </Menu>
+
+            </Sider>
     )
 }
