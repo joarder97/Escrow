@@ -16,10 +16,10 @@ export default function LeftSideBar(){
     return(
             <Sider
               style={{
-              overflow: 'auto',
-              height: '100vh',
-              position: 'fixed',
-              left:0,
+                overflow: 'auto',
+                height: '100vh',
+                position: 'fixed',
+                left:0,
               }}
             >
         
