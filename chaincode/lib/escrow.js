@@ -137,8 +137,8 @@ class Escrow extends Contract {
         return JSON.stringify(orderCancelStatus);
     }
 
-    async getBuyersReleaseFundKey(ctx, buyerDepositId){
-        const fileJSON = await ctx.stub.getState(buyerDepositId);
+    async getBuyersReleaseFundKey(ctx, key){
+        const fileJSON = await ctx.stub.getState(key);
         if (!fileJSON || fileJSON.length === 0) {
             throw new Error(`The order ${key} does not exist`);
         }
@@ -150,6 +150,9 @@ class Escrow extends Contract {
     }
 
     async releaseFund(ctx, key, orderId, fundReleaseKey){
+
+
+        console.log(key, orderId, fundReleaseKey);
 
         let releaseKey = await this.getBuyersReleaseFundKey(ctx, key);
 
@@ -167,8 +170,22 @@ class Escrow extends Contract {
                 
                 await ctx.stub.putState(key, Buffer.from(JSON.stringify(currentOrderStatus)));
                 return JSON.stringify(currentOrderStatus);
-                }
+            }
         }
+
+    }
+
+    async getOrderStatus(ctx, key){
+
+        const fileJSON = await ctx.stub.getState(key);
+        if (!fileJSON || fileJSON.length === 0) {
+            throw new Error(`The order ${key} does not exist`);
+        }
+
+        let order = JSON.parse(fileJSON.toString());
+        let orderStatus = order.OrderStatus;
+
+        return JSON.stringify(orderStatus);
 
     }
 

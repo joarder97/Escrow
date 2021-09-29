@@ -24,33 +24,12 @@ const { Header, Content, Footer } = Layout;
 
 
 
-const onSearch = value => console.log(value);
 
 
 function MyApp({ Component, pageProps }) {
   return(  
           <Layout>
             <LeftSideBar/>
-
-            {/* <Layout 
-               style={{
-                position:'relative',
-                left:'500px',
-                top:'100px',
-               
-              
-              }}
-            >
-              <Space>
-                <Search
-                  placeholder="input Order Id"
-                  allowClear
-                  enterButton="track"
-                  size="large"
-                  onSearch={onSearch}
-                />
-              </Space>
-            </Layout> */}
 
             <Layout className="site-layout" style={{ 
               marginLeft: 200,  

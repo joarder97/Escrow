@@ -8,14 +8,16 @@ const { buildCCPOrg1, buildWallet } = require('../../fabric-samples/test-applica
 const { raw } = require('body-parser');
 
 const channelName = 'escrow';
-const chaincodeName = 'escrow';
+const chaincodeName = 'escrow3';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
-const org1UserId = 'appUser';
+const org1UserId = 'user';
 
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
 }
+
+// sudo lsof -i :3000
 
 async function main() {
 	try {	
@@ -295,6 +297,8 @@ async function main() {
 			app.post('/releaseFund',async function(req,res){
 				const {key, orderId, fundReleaseKey} = req.body;
 
+				console.log(key,orderId,fundReleaseKey);
+
 				try {
 					let result = await contract.evaluateTransaction(
 						'releaseFund',
@@ -308,6 +312,49 @@ async function main() {
 						key,
 						orderId,
 						fundReleaseKey
+					);
+					
+
+					res.send(result.toString());
+
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
+			app.post('/getOrderStatus',async function(req,res){
+				const {key} = req.body;
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'getOrderStatus',
+						key
+						);
+
+					await contract.submitTransaction(	
+						'getOrderStatus',
+						key
+					);
+					
+					res.send(result.toString());
+
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
+			app.post('/getBuyersReleaseFundKey',async function(req,res){
+				const {buyerDepositId} = req.body;
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'getBuyersReleaseFundKey',
+						buyerDepositId
+						);
+
+					await contract.submitTransaction(	
+						'getBuyersReleaseFundKey',
+						buyerDepositId
 					);
 					
 					res.send(result.toString());

@@ -52,7 +52,7 @@ export default function depositBuyer(){
     console.log(data);
 
     
-  };
+};
   
 
   return (

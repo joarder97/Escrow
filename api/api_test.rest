@@ -75,8 +75,25 @@ POST http://localhost:3000/releaseFund
 content-type: application/json
 
 {
-    "key":"b1_s1_tx1",
+    "key":"b1_o1_tx1",
     "orderId":"o1",
-    "fundReleaseKey":"9870"
+    "fundReleaseKey":"5350"
 }
 
+###
+
+POST http://localhost:3000/getOrderStatus
+content-type: application/json
+
+{
+    "key":"o1"
+}
+
+###
+
+POST http://localhost:3000/getBuyersReleaseFundKey
+content-type: application/json
+
+{
+    "buyerDepositId":"b1_o1_tx1"
+}
