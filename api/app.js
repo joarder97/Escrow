@@ -17,9 +17,8 @@ function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
 }
 
-
 async function main() {
-	try {
+	try {	
 		
 		const ccp = buildCCPOrg1();
 
@@ -70,7 +69,7 @@ async function main() {
 			app.use(cors(
 				{
 					origin:"http://localhost:3001",
-					credentials:true
+					// credentials:true
 				}
 			))
 
@@ -284,6 +283,31 @@ async function main() {
 					await contract.submitTransaction(	
 						'cancelOrder',
 						key
+					);
+					
+					res.send(result.toString());
+
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
+			app.post('/releaseFund',async function(req,res){
+				const {key, orderId, fundReleaseKey} = req.body;
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'releaseFund',
+						key,
+						orderId,
+						fundReleaseKey
+						);
+
+					await contract.submitTransaction(	
+						'releaseFund',
+						key,
+						orderId,
+						fundReleaseKey
 					);
 					
 					res.send(result.toString());

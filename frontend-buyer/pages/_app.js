@@ -56,11 +56,11 @@ function MyApp({ Component, pageProps }) {
               marginLeft: 200,  
               position:'relative',
                 
-                top:'400px',
+              top:'40px',
               }}>
               {/* <Header className="site-layout-background" style={{ padding: 0 }} /> */}
-              <Content style={{ margin: '24px 16px 0', overflow: 'initial' }}>
-                <div className="site-layout-background" style={{ padding: 24, textAlign: 'center' }}>
+              <Content style={{ overflow: 'initial' }}>
+                <div className="site-layout-background" style={{ padding: 0}}>
 
                   <Component {...pageProps} />
                   </div>

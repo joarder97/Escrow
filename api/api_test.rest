@@ -71,9 +71,12 @@ content-type: application/json
 
 ###
 
-POST http://localhost:3000/cancelOrder
+POST http://localhost:3000/releaseFund
 content-type: application/json
 
 {
-    "key":"a1"
+    "key":"b1_s1_tx1",
+    "orderId":"o1",
+    "fundReleaseKey":"9870"
 }
+
