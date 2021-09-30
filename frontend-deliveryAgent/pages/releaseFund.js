@@ -10,10 +10,15 @@ export default function releaseFund(){
   const onSubmit = async (values) => {
     console.log(values);
 
-    const url = 'http://localhost:3000/getOrderStatus';
+    const url = 'http://localhost:3000/releaseFund';
+
+    let key = 'o1';
+    let depositTransactionId = 'b1_o1_tx1';
 
     let requestBody = {
-      key:values,
+      key:key,
+      depositTransactionId:depositTransactionId,
+      fundReleaseKey:values
     };
     console.log(requestBody);
     let response = await fetch(url, {
@@ -27,7 +32,7 @@ export default function releaseFund(){
       body: JSON.stringify(requestBody),
   });
     let data = await response.json();
-    let displayOrderStatus = 'Your Order Status is: ' + data; 
+    let displayOrderStatus = 'Fund Released. '; 
     console.log(data);
 
     setOrderStatus(displayOrderStatus);
@@ -36,10 +41,10 @@ export default function releaseFund(){
   return (
   <Space direction="vertical">
     <Search
-      name="trackOrderId"
-      placeholder="input search text"
+      name="releaseFund"
+      placeholder="input Confirmation Key"
       allowClear
-      enterButton="Search"
+      enterButton="Confirm"
       size="large"
       onSearch={onSubmit}
     />

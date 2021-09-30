@@ -23,7 +23,7 @@ content-type: application/json
     "sellerId":"s1",
     "orderId":"o1",
     "depositTransactionId":"tx1",
-    "depositPaymentAmount":50
+    "depositPaymentAmount":"50"
 }
 
 ###
