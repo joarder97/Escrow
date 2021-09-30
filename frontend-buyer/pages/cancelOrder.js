@@ -1,9 +1,12 @@
 import styles from '../styles/Home.module.css'
 import { Alert, Button, Space } from 'antd';
+import { useState } from 'react';
 
 
 
 export default function cancelOrder() {
+
+  const [orderStatus, setOrderStatus] = useState('');
 
   const onSubmit = async () => {
 
@@ -26,9 +29,10 @@ export default function cancelOrder() {
       body: JSON.stringify(requestBody),
   });
     let data = await response.json();
+    let displayOrderStatus = data;
     console.log(data);
 
-    
+    setOrderStatus('Order Cancelled');
 };
 
   return (
@@ -41,9 +45,7 @@ export default function cancelOrder() {
         <Button size="small" danger type="ghost" onClick={onSubmit}>
           Yes
         </Button>
-        <Button size="small" type="primary">
-          No
-        </Button>
+        <p>{orderStatus}</p>
       </Space>
     }
     closable
