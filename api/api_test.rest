@@ -32,7 +32,7 @@ POST http://localhost:3000/depositSeller
 content-type: application/json
 
 {
-    "key":"s1_b1_o1",
+    "key":"s1_o1_tx1",
     "sellerId":"s1",
     "buyerId":"b1",
     "orderId":"o1",
