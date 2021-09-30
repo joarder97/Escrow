@@ -1,4 +1,5 @@
 import { Form, Input, Button } from 'antd';
+import { useState } from 'react';
 
 const layout = {
   labelCol: {
@@ -15,7 +16,10 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
+
+
 export default function depositBuyer(){
+  const [releaseKey, setReleaseKey] = useState('');
   const onSubmit = async (values) => {
     console.log(values);
 
@@ -49,9 +53,10 @@ export default function depositBuyer(){
       body: JSON.stringify(requestBody),
   });
     let data = await response.json();
+    let displayReleaseKey = data;
     console.log(data);
 
-    
+    setReleaseKey('Release Key: ' + displayReleaseKey.FundReleaseKey);
 };
   
 
@@ -106,7 +111,7 @@ export default function depositBuyer(){
           Submit
         </Button>
       </Form.Item>
-
+        <p>{releaseKey}</p>
     </Form>
   );
 };
