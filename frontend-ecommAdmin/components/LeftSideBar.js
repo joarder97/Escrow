@@ -1,13 +1,7 @@
 import { Layout, Menu } from 'antd';
+import {useRouter}  from 'next/router';
+
 import {
-  AppstoreOutlined,
-  BarChartOutlined,
-  CloudOutlined,
-  ShopOutlined,
-  TeamOutlined,
-  UserOutlined,
-  UploadOutlined,
-  VideoCameraOutlined,
   UserAddOutlined,
   ApiOutlined,
   EditOutlined,
@@ -16,6 +10,7 @@ import {
 const { Sider } = Layout;
 
 export default function LeftSideBar(){
+    const router = useRouter();
     return(
             <Sider
               style={{
@@ -28,14 +23,14 @@ export default function LeftSideBar(){
         
               <h2 className="logo">Escrow E-Admin</h2>
 
-              <Menu theme="dark" mode="inline" defaultSelectedKeys={['4']}>
-                  <Menu.Item key="1" icon={<UserAddOutlined />}>
+              <Menu theme="dark" mode="inline">
+                  <Menu.Item key="1" icon={<UserAddOutlined />} onClick={ () => router.push('/createDeliveryAgent')}>
                     Create Agnet
                   </Menu.Item>
-                  <Menu.Item key="2" icon={<ApiOutlined />}>
+                  <Menu.Item key="2" icon={<ApiOutlined />} onClick={ () => router.push('/assignDeliveryAgent')}>
                     Assign Agent
                   </Menu.Item>
-                  <Menu.Item key="3" icon={<EditOutlined />}>
+                  <Menu.Item key="3" icon={<EditOutlined />} onClick={ () => router.push('/updateOrderStatus')}>
                     Update Order Status
                   </Menu.Item>
                  

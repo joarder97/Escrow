@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 const { Search } = Input;
 
-export default function trackOrder(){
+export default function updateOrderStatus(){
   
   const [orderStatus, setOrderStatus] = useState('');
 
