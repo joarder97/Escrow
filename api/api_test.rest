@@ -75,9 +75,9 @@ POST http://localhost:3000/releaseFund
 content-type: application/json
 
 {
-    "key":"b1_o1_tx1",
-    "orderId":"o1",
-    "fundReleaseKey":"5350"
+    "key":"o1",
+    "depositTransactionId":"b1_o1_tx1",
+    "fundReleaseKey":"4789"
 }
 
 ###

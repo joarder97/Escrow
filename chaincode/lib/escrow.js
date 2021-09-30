@@ -146,20 +146,17 @@ class Escrow extends Contract {
         let releaseFund = JSON.parse(fileJSON.toString());
         let releaseFundKey = releaseFund.FundReleaseKey;
 
-        return JSON.stringify(releaseFundKey);
+        return releaseFundKey;
     }
 
-    async releaseFund(ctx, key, orderId, fundReleaseKey){
+    async releaseFund(ctx, key, depositTransactionId, fundReleaseKey){
 
-
-        console.log(key, orderId, fundReleaseKey);
-
-        let releaseKey = await this.getBuyersReleaseFundKey(ctx, key);
-
+        
+        let releaseKey = await this.getBuyersReleaseFundKey(ctx, depositTransactionId);
         if(releaseKey){
-            if(releaseKey == fundReleaseKey){
-                const fileJSON = await ctx.stub.getState(orderId);
-
+            if(releaseKey === fundReleaseKey){
+                const fileJSON = await ctx.stub.getState(key);
+    
                 if (!fileJSON || fileJSON.length === 0) {
                     throw new Error('The order does not exist');
                 }

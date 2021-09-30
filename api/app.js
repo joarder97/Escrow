@@ -8,10 +8,10 @@ const { buildCCPOrg1, buildWallet } = require('../../fabric-samples/test-applica
 const { raw } = require('body-parser');
 
 const channelName = 'escrow';
-const chaincodeName = 'escrow3';
+const chaincodeName = 'escrow12';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
-const org1UserId = 'user';
+const org1UserId = 'Appuser';
 
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
@@ -295,22 +295,22 @@ async function main() {
 			});
 
 			app.post('/releaseFund',async function(req,res){
-				const {key, orderId, fundReleaseKey} = req.body;
+				const {key, depositTransactionId, fundReleaseKey} = req.body;
 
-				console.log(key,orderId,fundReleaseKey);
+				console.log(key,depositTransactionId,fundReleaseKey);
 
 				try {
 					let result = await contract.evaluateTransaction(
 						'releaseFund',
 						key,
-						orderId,
+						depositTransactionId,
 						fundReleaseKey
 						);
 
 					await contract.submitTransaction(	
 						'releaseFund',
 						key,
-						orderId,
+						depositTransactionId,
 						fundReleaseKey
 					);
 					
