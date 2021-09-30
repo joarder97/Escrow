@@ -1,5 +1,3 @@
-
-
 import { Table, Tag, Space } from 'antd';
 
 const { Column, ColumnGroup } = Table;
