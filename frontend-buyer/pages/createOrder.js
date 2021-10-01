@@ -1,6 +1,6 @@
 import { Table, Tag, Space } from 'antd';
 
-const { Column, ColumnGroup } = Table;
+const { Column } = Table;
 
 
 
@@ -13,37 +13,31 @@ export default function createOrder() {
 
     async function onLoad () {
 
-        try{
-            const url = 'http://localhost:3000/createOrder';
+          const url = 'http://localhost:3000/createOrder';
 
             let requestBody = {
-            key : orderId,
-            sellerId : sellerId,
-            buyerId : buyerId,
-            orderDeliveryDate : orderDeliveryDate,
-            
+              key : orderId,
+              sellerId : sellerId,
+              buyerId : buyerId,
+              orderDeliveryDate : orderDeliveryDate,
             };
 
-            console.log(requestBody);
+            // console.log(requestBody);
 
-            let response = await fetch(url, {
+          let response = await fetch(url, {
             method: 'POST',
             mode: 'cors',
             cache: 'no-cache',
             credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
-            },
+          },
             body: JSON.stringify(requestBody),
-            });
+          });
 
+            // console.log(response);
             let data = await response.json();
             console.log(data);
-        }
-        catch(err){
-            console.log('error!!!');
-        }
-        
     };
 
 
@@ -62,10 +56,10 @@ const _data = [
 
 return(
         <Table dataSource={_data} onLoad={onLoad()}>
-          <Column title="Order Id" dataIndex="orderId" key="orderId" />
-          <Column title="Seller Id" dataIndex="sellerId" key="sellerId" />
-          <Column title="Buyer Id" dataIndex="buyerId" key="buyerId" /> 
-          <Column title="Order Delivery Date" dataIndex="orderDeliveryDate" key="orderDeliveryDate" />
+          <Column title="Order Id" dataIndex="orderId"  />
+          <Column title="Seller Id" dataIndex="sellerId"  />
+          <Column title="Buyer Id" dataIndex="buyerId"  /> 
+          <Column title="Order Delivery Date" dataIndex="orderDeliveryDate"  />
         </Table>
       );
 }

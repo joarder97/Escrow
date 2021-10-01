@@ -8,10 +8,10 @@ const { buildCCPOrg1, buildWallet } = require('../../fabric-samples/test-applica
 const { raw } = require('body-parser');
 
 const channelName = 'escrow';
-const chaincodeName = 'escrow12';
+const chaincodeName = 'escrow';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
-const org1UserId = 'Appuser';
+const org1UserId = 'AppUser';
 
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
@@ -62,17 +62,16 @@ async function main() {
 			const crypto = require('crypto');
             const fs = require('fs');
 			const util = require('util');
-			var cors = require('cors')
+			var cors = require('cors');
+			
 
 
 			let app=express();
 			const PORT=3000;
 
+
 			app.use(cors(
-				{
-					origin:"http://localhost:3001",
-					// credentials:true
-				}
+
 			))
 
 			app.use(express.urlencoded({ extended: false }));

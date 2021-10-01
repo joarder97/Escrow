@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }) {
               {/* <Header className="site-layout-background" style={{ padding: 0 }} /> */}
               <Content style={{ overflow: 'initial' }}>
                 <div className="site-layout-background" style={{ padding: 0}}>
-
+                 
                   <Component {...pageProps} />
                   </div>
               </Content>

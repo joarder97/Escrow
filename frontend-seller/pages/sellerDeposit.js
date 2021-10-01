@@ -1,5 +1,7 @@
 import { Form, Input, Button } from 'antd';
 
+
+
 const layout = {
   labelCol: {
     span: 5,
@@ -15,7 +17,7 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-export default function depositSeller(){
+export default function sellerDeposit(){
   const onSubmit = async (values) => {
     console.log(values);
 
@@ -35,12 +37,12 @@ export default function depositSeller(){
       buyerId:buyerId,
       orderId: OrderId,
       depositTransactionId:accountNumber,
-      depositPaymentAmount:paymentAmount,      
+      depositPaymentAmount:paymentAmount,
     };
 
     let response = await fetch(url, {
       method: 'POST',
-      // mode: 'cors',
+      mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
@@ -48,6 +50,9 @@ export default function depositSeller(){
       },
       body: JSON.stringify(requestBody),
   });
+
+    console.log(response);
+
     let data = await response.json();
     console.log(data);
 
