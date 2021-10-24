@@ -60,6 +60,7 @@ class Escrow extends Contract {
         if(sellerDepositStatus){
             await this.updateOrderStatus(ctx, orderId, "Seller Deposited, Order Confirmed");
         }
+
         return JSON.stringify(sellerDeposit);
     }
 
@@ -104,10 +105,14 @@ class Escrow extends Contract {
     }
 
     async assignDeliveryAgent(ctx, key, orderId){
+        
+        let status = await this.updateOrderAgentId(ctx, orderId, key);
+        let status_ = await this.updateOrderStatus(ctx, orderId, "Order Shipped");
+      
 
-        let updatedAgentStatus = await this.updateOrderAgentId(ctx, orderId, key);
+        
 
-        if(updatedAgentStatus){
+        if(status || status_){
             const fileJSON = await ctx.stub.getState(key);
             if (!fileJSON || fileJSON.length === 0) {
                 throw new Error('The agent does not exist');
@@ -117,6 +122,7 @@ class Escrow extends Contract {
             agentStatus.IsAgentSelected = 'true';
 
             await ctx.stub.putState(key, Buffer.from(JSON.stringify(agentStatus)));
+
             return JSON.stringify(agentStatus);
         }
     }
@@ -124,6 +130,9 @@ class Escrow extends Contract {
     // cancel order
 
     async cancelOrder(ctx, key){
+
+        await this.updateOrderStatus(ctx, key, "Order Cancelled");
+
         const fileJSON = await ctx.stub.getState(key);
 
         if (!fileJSON || fileJSON.length === 0) {
@@ -135,6 +144,7 @@ class Escrow extends Contract {
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(orderCancelStatus)));
         return JSON.stringify(orderCancelStatus);
+
     }
 
     async getBuyersReleaseFundKey(ctx, key){

@@ -16,7 +16,7 @@ const channelName = 'escrow';
 const chaincodeName = 'escrow';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
-const org1UserId = 'appUser';
+const org1UserId = 'app';
 
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
@@ -68,15 +68,15 @@ async function main() {
 
 			//create order
 
-			try {
+			// try {
 
-				let result = await contract.evaluateTransaction('createOrder', 'o1', 's1', 'b1', '7/10/2121');
-				await contract.submitTransaction('createOrder', 'o1', 's1', 'b1', '7/10/2121');
-				console.log(`\n \n Order Created:  Result  ${result} \n\n`);
+			// 	let result = await contract.evaluateTransaction('createOrder', 'o1', 's1', 'b1', '7/10/2121');
+			// 	await contract.submitTransaction('createOrder', 'o1', 's1', 'b1', '7/10/2121');
+			// 	console.log(`\n \n Order Created:  Result  ${result} \n\n`);
 
-			} catch (error) {
-				console.log(`*** error: \n    ${error}`);
-			}
+			// } catch (error) {
+			// 	console.log(`*** error: \n    ${error}`);
+			// }
 
 			// // Buyer deposit
 
@@ -99,20 +99,20 @@ async function main() {
 
 			// seller deposit
 			
-			try {
-				let today = new Date();
-				let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-				let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-				let dateTime = date+' '+time;
+			// try {
+			// 	let today = new Date();
+			// 	let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+			// 	let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+			// 	let dateTime = date+' '+time;
 
-				let result = await contract.evaluateTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', 50, dateTime);
-				await contract.submitTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', 50, dateTime);
+			// 	let result = await contract.evaluateTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', 50, dateTime);
+			// 	await contract.submitTransaction('depositSeller','s1_o1_tx2', 's1', 'b1', 'o1', 'tx2', 50, dateTime);
 				
-				console.log(`Sellers deposit succesful:   Result  ${result} \n\n`);
+			// 	console.log(`Sellers deposit succesful:   Result  ${result} \n\n`);
 
-			} catch (error) {
-				console.log(`*** error: \n    ${error}`);
-			}
+			// } catch (error) {
+			// 	console.log(`*** error: \n    ${error}`);
+			// }
 
 			//update order
 		
@@ -129,42 +129,42 @@ async function main() {
 
 			//create delivery agent
 
-			try {
+			// try {
 
-				let result = await contract.evaluateTransaction('createDeliveryAgent', 'a1');
-				await contract.submitTransaction('createDeliveryAgent', 'a1');
+			// 	let result = await contract.evaluateTransaction('createDeliveryAgent', 'a1');
+			// 	await contract.submitTransaction('createDeliveryAgent', 'a1');
 
-				console.log(`Agent Created:  Result  ${result} \n\n`);
+			// 	console.log(`Agent Created:  Result  ${result} \n\n`);
 
-			} catch (error) {
-				console.log(`*** error: \n    ${error}`);
-			}
+			// } catch (error) {
+			// 	console.log(`*** error: \n    ${error}`);
+			// }
 
 			//Assign delivery agent
 
-			try {
+			// try {
 
-				let result = await contract.evaluateTransaction('assignDeliveryAgent', 'a1', 'o1');
-				await contract.submitTransaction('assignDeliveryAgent', 'a1', 'o1');
+			// 	let result = await contract.evaluateTransaction('assignDeliveryAgent', 'a1', 'o1');
+			// 	await contract.submitTransaction('assignDeliveryAgent', 'a1', 'o1');
 
-				console.log(`Agent Assigned:  Result  ${result} \n\n`);
+			// 	console.log(`Agent Assigned:  Result  ${result} \n\n`);
 
-			} catch (error) {
-				console.log(`*** error: \n    ${error}`);
-			}
+			// } catch (error) {
+			// 	console.log(`*** error: \n    ${error}`);
+			// }
 
 			// update order status
 
-			try {
+			// try {
 
-				let result = await contract.evaluateTransaction('updateOrderStatus', 'o1', 'order_shipped.');
-				await contract.submitTransaction('updateOrderStatus', 'o1', 'order_shipped.');
+			// 	let result = await contract.evaluateTransaction('updateOrderStatus', 'o1', 'order_shipped.');
+			// 	await contract.submitTransaction('updateOrderStatus', 'o1', 'order_shipped.');
 
-				console.log(`Order Status updated:  Result  ${result} \n\n`);
+			// 	console.log(`Order Status updated:  Result  ${result} \n\n`);
 
-			} catch (error) {
-				console.log(`*** error: \n    ${error}`);
-			}
+			// } catch (error) {
+			// 	console.log(`*** error: \n    ${error}`);
+			// }
 
 			// cancel order
 

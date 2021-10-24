@@ -26,7 +26,7 @@ export default function createOrder() {
 
           let response = await fetch(url, {
             method: 'POST',
-            mode: 'cors',
+            // mode: 'cors',
             cache: 'no-cache',
             credentials: 'same-origin',
             headers: {

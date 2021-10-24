@@ -97,3 +97,12 @@ content-type: application/json
 {
     "buyerDepositId":"b1_o1_tx1"
 }
+
+###
+
+POST http://localhost:3000/cancelOrder
+content-type: application/json
+
+{
+    "key":"o1"
+}
