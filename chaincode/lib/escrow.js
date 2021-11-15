@@ -60,7 +60,6 @@ class Escrow extends Contract {
         if(sellerDepositStatus){
             await this.updateOrderStatus(ctx, orderId, "Seller Deposited, Order Confirmed");
         }
-
         return JSON.stringify(sellerDeposit);
     }
 
@@ -105,14 +104,10 @@ class Escrow extends Contract {
     }
 
     async assignDeliveryAgent(ctx, key, orderId){
-        
-        let status = await this.updateOrderAgentId(ctx, orderId, key);
-        let status_ = await this.updateOrderStatus(ctx, orderId, "Order Shipped");
-      
 
-        
+        let updatedAgentStatus = await this.updateOrderAgentId(ctx, orderId, key);
 
-        if(status || status_){
+        if(updatedAgentStatus){
             const fileJSON = await ctx.stub.getState(key);
             if (!fileJSON || fileJSON.length === 0) {
                 throw new Error('The agent does not exist');
@@ -122,7 +117,6 @@ class Escrow extends Contract {
             agentStatus.IsAgentSelected = 'true';
 
             await ctx.stub.putState(key, Buffer.from(JSON.stringify(agentStatus)));
-
             return JSON.stringify(agentStatus);
         }
     }
@@ -131,8 +125,8 @@ class Escrow extends Contract {
 
     async cancelOrder(ctx, key){
 
-        await this.updateOrderStatus(ctx, key, "Order Cancelled");
-
+        // await this.updateOrderStatus(ctx, key, "Order Cancelled");
+        
         const fileJSON = await ctx.stub.getState(key);
 
         if (!fileJSON || fileJSON.length === 0) {
@@ -143,8 +137,8 @@ class Escrow extends Contract {
         orderCancelStatus.IsOrderCancelled = 'true';
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(orderCancelStatus)));
-        return JSON.stringify(orderCancelStatus);
 
+        return JSON.stringify(orderCancelStatus);
     }
 
     async getBuyersReleaseFundKey(ctx, key){
@@ -161,8 +155,8 @@ class Escrow extends Contract {
 
     async releaseFund(ctx, key, depositTransactionId, fundReleaseKey){
 
-        
         let releaseKey = await this.getBuyersReleaseFundKey(ctx, depositTransactionId);
+
         if(releaseKey){
             if(releaseKey === fundReleaseKey){
                 const fileJSON = await ctx.stub.getState(key);

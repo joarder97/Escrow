@@ -77,7 +77,7 @@ content-type: application/json
 {
     "key":"o1",
     "depositTransactionId":"b1_o1_tx1",
-    "fundReleaseKey":"4789"
+    "fundReleaseKey":"2452"
 }
 
 ###

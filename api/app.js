@@ -8,10 +8,10 @@ const { buildCCPOrg1, buildWallet } = require('../../fabric-samples/test-applica
 const { raw } = require('body-parser');
 
 const channelName = 'escrow';
-const chaincodeName = 'escrow17';
+const chaincodeName = 'escrow';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
-const org1UserId = '__app';
+const org1UserId = '_app';
 
 function prettyJSONString(inputString) {
 	return JSON.stringify(JSON.parse(inputString), null, 2);
