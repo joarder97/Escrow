@@ -10,6 +10,60 @@ const { Contract } = require('fabric-contract-api');
 
 class Escrow extends Contract {
 
+    async CreateBuyer(ctx, key, email,password) {
+        const buyer = {
+            Key: key,
+            Email:email,
+            Password: password,
+            DocType: 'buyer',
+        };
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(buyer)));
+        return JSON.stringify(buyer);
+    }
+
+    async CreateSeller(ctx, key, password) {
+        const seller = {
+            Key: key,
+            Password: password,
+            DocType: 'seller',
+        };
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(seller)));
+        return JSON.stringify(seller);
+    }
+
+    async FindUser(ctx, email, password) {
+        const key = `buyer_${email}`;
+        const userJSON = await ctx.stub.getState(key); // get the asset from chaincode state
+        if (!userJSON || userJSON.length === 0) {
+            throw new Error(`The User with email ${email} does not exist`);
+        }
+
+        const user = JSON.parse(userJSON.toString());
+        if (user.Password !== password) {
+            throw new Error('Email and Password do not match any user in our system');
+        }
+
+        user.Password = 'SECRET';
+
+        return JSON.stringify(user);
+    }
+
+    async FindUserByKey(ctx, key) {
+        const userJSON = await ctx.stub.getState(key); // get the asset from chaincode state
+        if (!userJSON || userJSON.length === 0) {
+            throw new Error('User does not exist');
+        }
+
+        let user = JSON.parse(userJSON.toString());
+        user.Password = 'SECRET';
+
+        return JSON.stringify(user);
+    }
+
+
+
     async createOrder(ctx, key, sellerId, buyerId, OrderDeliveryDate){
 
         const order = {

@@ -4,6 +4,10 @@ import '../../styles/logo.module.css';
 import { Layout,Input, Space } from 'antd';
 
 import LeftSideBar from '../../components/LeftSideBarBuyer';
+import { SessionProvider } from 'next-auth/react';
+import session from 'express-session';
+
+// import {PageContextProvider} from "../lib/usePageContext";
 
 const { Search } = Input;
 const { Content, Footer } = Layout;
@@ -13,7 +17,7 @@ const { Content, Footer } = Layout;
 function MyAppBuyer({ Component, pageProps }) {
   console.log("Hello from app");
   return(  
-
+      <SessionProvider session={session}>
             <div>
               <div>
                 <LeftSideBar/>  
@@ -43,6 +47,7 @@ function MyAppBuyer({ Component, pageProps }) {
               </div>
             </div>
           </div>
+        </SessionProvider>
   )
 }
 

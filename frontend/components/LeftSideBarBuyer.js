@@ -16,7 +16,41 @@ const { Sider } = Layout;
 // import '../styles/globals.css';
 
 
+
 export default function LeftSideBar(){
+
+  //   const handleSubmit = async () => {
+  //     const {email, password} = values.user;
+  //     const url = 'http://localhost:3000/logout';
+  //     const requestBody = {
+  //         email: email,
+  //         password: password,
+  //     };
+
+  //     const response = await fetch(url, {
+  //         method: 'POST',
+  //         mode: 'cors',
+  //         cache: 'no-cache',
+  //         withCredentials: true,
+  //         credentials: 'same-origin',
+  //         headers: {
+  //             'Content-Type': 'application/json'
+  //         },
+  //         body: JSON.stringify(requestBody)
+  //     });
+
+  //     const data = await response.json();
+  //     console.log(data.authenticated);
+
+
+
+      
+
+  //     if(data.authenticated==false){
+  //         window.location.href = '/';
+  //     }
+  // };
+
   console.log("Hello from Bar");
     const router = useRouter();
     return(
@@ -46,6 +80,9 @@ export default function LeftSideBar(){
                   </Menu.Item>
                   <Menu.Item key="5" icon={<ExclamationCircleOutlined />}>
                     Claim Dispute
+                  </Menu.Item>
+                  <Menu.Item key="6">
+                    Logout
                   </Menu.Item>
               </Menu>
 
