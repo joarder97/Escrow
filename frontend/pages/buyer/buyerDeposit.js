@@ -1,3 +1,4 @@
+import useUser from "../../lib/useUser";
 import { Form, Input, Button } from 'antd';
 import { useState } from 'react';
 import LeftSideBar from '../../components/LeftSideBarBuyer.js';
@@ -24,32 +25,36 @@ const validateMessages = {
 
 
 export default function depositBuyer(){
+  useUser({redirectTo: '/login', redirectIfFound: false});
   const [releaseKey, setReleaseKey] = useState('');
-  const onSubmit = async (values) => {
+
+
+  async function onSubmit (values){
     console.log(values);
 
 
 
-    const {name, accountNumber, paymentAmount} = values.buyer;
+    var Key = "tx_"+values.buyer.orderId+"_"+values.buyer.name+"_"+values.buyer.sellerId;
 
-    let Key = 'b1_o1_tx1';
-    let SellerId = 's1';
-    let OrderId = 'o1';
+    console.log(Key);
+
 
     const url = 'http://localhost:3000/depositBuyer';
 
     let requestBody = {
       key:Key,
-      buyerId:name,
-      sellerId: SellerId,
-      orderId: OrderId,
-      depositTransactionId:accountNumber,
-      depositPaymentAmount:paymentAmount,      
+      buyerId:values.buyer.name,
+      sellerId: values.buyer.sellerId,
+      orderId: values.buyer.orderId,
+      depositTransactionId: values.buyer.accountNumber,
+      depositPaymentAmount: values.buyer.paymentAmount,      
     };
+
+    console.log(requestBody);
 
     let response = await fetch(url, {
       method: 'POST',
-      mode: 'cors',
+      // mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
@@ -60,7 +65,6 @@ export default function depositBuyer(){
     let data = await response.json();
     let displayReleaseKey = data;
     console.log(data);
-
     setReleaseKey('Release Key: ' + displayReleaseKey.FundReleaseKey);
 };
   
@@ -72,7 +76,36 @@ export default function depositBuyer(){
       </div>
       <div className={styles.container}>
 
+
+
       <Form {...layout} name="nest-messages" onFinish={onSubmit} validateMessages={validateMessages}>
+        
+      <Form.Item
+          name={['buyer', 'orderId']}
+          label="Order Id"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+
+          <Input />
+        </Form.Item>
+        
+        <Form.Item
+          name={['buyer', 'sellerId']}
+          label="Seller ID"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+
+          <Input />
+        </Form.Item>
+
         <Form.Item
           name={['buyer', 'name']}
           label="Name"

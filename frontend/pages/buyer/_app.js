@@ -1,26 +1,29 @@
+// import useUser from "../../lib/useUser";
 import 'antd/dist/antd.css';
 import '../../styles/logo.module.css';
 
 import { Layout,Input, Space } from 'antd';
+// import LeftSideBar from "../../components/LeftSideBarBuyer";
 
-import LeftSideBar from '../../components/LeftSideBarBuyer';
-import { SessionProvider } from 'next-auth/react';
-import session from 'express-session';
 
-// import {PageContextProvider} from "../lib/usePageContext";
+
+
+
 
 const { Search } = Input;
 const { Content, Footer } = Layout;
 
 // import '../../styles/globals.css';
 
-function MyAppBuyer({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
+
   console.log("Hello from app");
+  // console.log(useUser);
+
+  // useUser({redirectTo: '/login', redirectIfFound: false});
+
   return(  
-      <SessionProvider session={session}>
-            <div>
-              <div>
-                <LeftSideBar/>  
+
               <div> 
                 <Layout>
                   <Layout className="site-layout" style={{ 
@@ -32,9 +35,10 @@ function MyAppBuyer({ Component, pageProps }) {
                     {/* <Header className="site-layout-background" style={{ padding: 0 }} /> */}
                     <Content style={{ overflow: 'initial' }}>
                       <div className="site-layout-background" style={{ padding: 0}}>
-
+                        
                         <Component {...pageProps} />
                         </div>
+                        
                     </Content>
                     <Footer style={{ 
                       textAlign: 'center',
@@ -45,13 +49,12 @@ function MyAppBuyer({ Component, pageProps }) {
                   </Layout>
               </Layout>
               </div>
-            </div>
-          </div>
-        </SessionProvider>
+
+
   )
 }
 
-export default MyAppBuyer;
+export default MyApp;
 
 //////
 

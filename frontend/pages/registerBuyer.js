@@ -1,5 +1,5 @@
 import {Button, Form, Input} from 'antd';
-import {useRouter} from "next/router";
+// import {useRouter} from "next/router";
 
 
 
@@ -27,7 +27,7 @@ const validateMessages = {
 
 export default function RegisterPage() {
 
-    const router = useRouter();
+    // const router = useRouter();
 
 
 
@@ -57,8 +57,9 @@ export default function RegisterPage() {
 
         if (data.success==false) {
             alert(data.message);
-        }else{
-            router.push('/login');
+        }
+        else if (data.success==true){ 
+            window.location.href = '/login';
         }
         // start login
         // url = 'http://localhost:3000/login';

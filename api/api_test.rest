@@ -9,8 +9,30 @@ content-type: application/json
     "key":"o1",
     "sellerId":"s1",
     "buyerId":"b1",
-    "orderDeliveryDate":"7/10/2121" 
+    "orderDeliveryDate":"8/10/2121" 
 }
+
+###
+
+POST http://localhost:3000/registerSeller
+content-type: application/json
+
+{
+    "email":"masud@gmail.com",
+    "password":"1234"
+}
+
+
+###
+
+POST http://localhost:3000/registerEcommAdmin
+content-type: application/json
+
+{
+    "email":"masudAdmin@gmail.com",
+    "password":"1234"
+}
+
 
 ###
 

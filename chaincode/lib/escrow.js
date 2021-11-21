@@ -15,26 +15,41 @@ class Escrow extends Contract {
             Key: key,
             Email:email,
             Password: password,
-            DocType: 'buyer',
+            UserType: 'buyer',
         };
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(buyer)));
         return JSON.stringify(buyer);
     }
 
-    async CreateSeller(ctx, key, password) {
+    async CreateSeller(ctx, key, email, password) {
         const seller = {
             Key: key,
+            Email:email,
             Password: password,
-            DocType: 'seller',
+            UserType: 'seller',
         };
 
         await ctx.stub.putState(key, Buffer.from(JSON.stringify(seller)));
         return JSON.stringify(seller);
     }
 
-    async FindUser(ctx, email, password) {
-        const key = `buyer_${email}`;
+    async CreateEcommAdmin(ctx, key, email, password) {
+        const eCommAdmin = {
+            Key: key,
+            Email:email,
+            Password: password,
+            UserType: 'eCommAdmin',
+        };
+
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(eCommAdmin)));
+        return JSON.stringify(eCommAdmin);
+    }
+
+    async FindUser(ctx, email, password, userType) {
+        
+        let key = `${userType}_${email}`;
+
         const userJSON = await ctx.stub.getState(key); // get the asset from chaincode state
         if (!userJSON || userJSON.length === 0) {
             throw new Error(`The User with email ${email} does not exist`);
@@ -147,14 +162,20 @@ class Escrow extends Contract {
         return JSON.stringify(agentId);
     }
 
-    async createDeliveryAgent(ctx, key){
-        const agent = {
+    async createDeliveryAgent(ctx, email, password){
+
+        const key = `agent_${email}`;
+
+        const data = {
             Key : key,
+            Email:email,
+            Password: password,
             IsAgentSelected : 'false',
+            UserType: 'agent',
         };
 
-        await ctx.stub.putState(key, Buffer.from(JSON.stringify(agent)));
-        return JSON.stringify(agent);
+        await ctx.stub.putState(key, Buffer.from(JSON.stringify(data)));
+        return JSON.stringify(data);
     }
 
     async assignDeliveryAgent(ctx, key, orderId){

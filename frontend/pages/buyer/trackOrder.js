@@ -1,3 +1,4 @@
+import useUser from "../../lib/useUser";
 import { Input, Space } from 'antd';
 import { useState } from 'react';
 
@@ -10,6 +11,8 @@ import './index';
 const { Search } = Input;
 
 export default function trackOrder(){
+
+  useUser({redirectTo: '/login', redirectIfFound: false});
   
   const [orderStatus, setOrderStatus] = useState('');
 

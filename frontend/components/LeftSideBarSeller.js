@@ -41,6 +41,9 @@ export default function LeftSideBar(){
                   <Menu.Item key="3" icon={<CloseCircleOutlined />} onClick={ () => router.push('/seller/cancelOrder') }>
                     Cancel Order
                   </Menu.Item>
+                  <Menu.Item key="4" icon={<CloseCircleOutlined />} onClick={ () => router.push('/logout') }>
+                    Logout
+                  </Menu.Item>
               </Menu>
 
             </Sider>

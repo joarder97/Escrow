@@ -8,7 +8,7 @@ const { buildCCPOrg1, buildWallet } = require('../../fabric-samples/test-applica
 const { raw } = require('body-parser');
 
 const channelName = 'escrow';
-const chaincodeName = 'escrow3';
+const chaincodeName = 'escrow12';
 const mspOrg1 = 'Org1MSP';
 const walletPath = path.join(__dirname, 'wallet');
 const org1UserId = '_APp';
@@ -74,14 +74,15 @@ async function main() {
 
 
 			app.use(cors({
-				origin: "http://localhost:3001"
+				origin: "http://localhost:3001",
+				credentials: true
 			}));
 
-			app.use(session({
-				secret: 'secret',
-				cookie: { maxAge: 60000 },
-				saveUninitialized: false,
-			}));
+			// app.use(session({
+			// 	secret: 'secret',
+			// 	cookie: { maxAge: 60000 },
+			// 	saveUninitialized: false,
+			// }));
 
 			app.use(cookieParser());
 			app.use(express.urlencoded({ extended: false }));
@@ -107,7 +108,7 @@ async function main() {
 
 						const UserExistJSON = JSON.parse(UserExist.toString());
 	
-						console.log(UserExistJSON.Key);
+						// console.log(UserExistJSON.Key);
 	
 						if(UserExistJSON.Key===key)
 						{
@@ -120,16 +121,101 @@ async function main() {
 						let result = await contract.evaluateTransaction('CreateBuyer', key, email, password);
 						await contract.submitTransaction('CreateBuyer', key, email, password);
 						
-						var newUser = {email: req.body.email, password: req.body.password};
+
+						console.log(result);
+						res.send({
+							success: true,
+							message: 'User created successfully',
+						});
+						// var newUser = {email: req.body.email, password: req.body.password};
 
 						// console.log(newUser);
-						var userPush = Users.push(newUser);
+						// var userPush = Users.push(newUser);
 						// console.log(userPush);
-						req.session = newUser;
+						// req.session = newUser;
 						// res.redirect('/protected_page');
 
-						res.send(req.session);
+						// res.send(req.session);
+					}
+
+				}catch (error) {
+					res.status(400).json({
+					error: error.toString()
+					});
+				}
+			});
+
+
+			app.post('/registerSeller', async function (req, res) {
+				
+                const {email ,password} = req.body;
+                const key = `seller_${email}`;
+
+				try{
+
+					try{
+						let UserExist = await contract.evaluateTransaction('FindUserByKey', key);
+
+						const UserExistJSON = JSON.parse(UserExist.toString());
+	
+						// console.log(UserExistJSON.Key);
+	
+						if(UserExistJSON.Key===key)
+						{
+							res.send({
+								success: false,
+								message: 'User already exist'
+							});
+						}
+					}catch(e){
+						let result = await contract.evaluateTransaction('CreateSeller', key, email, password);
+						await contract.submitTransaction('CreateSeller', key, email, password);
 						
+
+						console.log(result);
+						res.send({
+							success: true,
+							message: 'User created successfully',
+						});
+					}
+
+				}catch (error) {
+					res.status(400).json({
+					error: error.toString()
+					});
+				}
+			});
+
+
+			app.post('/registerEcommAdmin', async function (req, res) {
+				
+                const {email ,password} = req.body;
+                const key = `ecommAdmin_${email}`;
+
+				try{
+
+					try{
+						let UserExist = await contract.evaluateTransaction('FindUserByKey', key);
+
+						const UserExistJSON = JSON.parse(UserExist.toString());
+	
+						if(UserExistJSON.Key===key)
+						{
+							res.send({
+								success: false,
+								message: 'User already exist'
+							});
+						}
+					}catch(e){
+						let result = await contract.evaluateTransaction('CreateEcommAdmin', key, email, password);
+						await contract.submitTransaction('CreateEcommAdmin', key, email, password);
+						
+
+						console.log(result);
+						res.send({
+							success: true,
+							message: 'User created successfully',
+						});
 
 					}
 
@@ -140,18 +226,57 @@ async function main() {
 				}
 			});
 
+
+			app.post('/createDeliveryAgent',async function(req,res){
+                const {email ,password} = req.body;
+                const key = `agent_${email}`;
+
+				try{
+
+					try{
+						let UserExist = await contract.evaluateTransaction('FindUserByKey', key);
+
+						const UserExistJSON = JSON.parse(UserExist.toString());
+	
+						if(UserExistJSON.Key===key)
+						{
+							res.send({
+								success: false,
+								message: 'User already exist'
+							});
+						}
+					}catch(e){
+						let result = await contract.evaluateTransaction('createDeliveryAgent', email, password);
+						await contract.submitTransaction('createDeliveryAgent', email, password);
+						
+
+						console.log(result);
+						res.send({
+							success: true,
+							message: 'User created successfully',
+						});
+
+					}
+
+				}catch (error) {
+					res.status(400).json({
+					error: error.toString()
+					});
+				}
+			});
 				
 
             app.post('/login', async function (req, res) {
-                const {email, password} = req.body;
+                const {email, password, userType} = req.body;
 
                 try {
-                    let result = await contract.evaluateTransaction('FindUser', email, password);
+                    let result = await contract.evaluateTransaction('FindUser', email, password, userType);
 
-					req.session.authenticated = true;
+					// req.session.email = email;
+					// req.session.authenticated = true;
 
-                    // res.cookie('user', result.toString(), {maxAge: 3600000, httpOnly: true});
-                    res.send(req.session);
+					res.cookie('user', result.toString(), {maxAge: 3600000, httpOnly: true});
+                    res.send(result);
 					// console.log(req.session);
                 } catch (error) {
                     res.status(400).json({
@@ -160,46 +285,44 @@ async function main() {
                 }
             });
 
-			// app.post('/logout', async function (req, res) {
-            //     const {email, password} = req.body;
 
-            //     try {
-            //         // res.cookie('user', '', {maxAge: -1, httpOnly: true});
-            //         // res.json({status: "You have successfully logged out"});
+            app.get('/logout', async function (req, res) {
+                const {email, password} = req.body;
 
-			// 		req.session.authenticated = false;
-			// 		req.session.destroy();
-			// 		res.send(req.session);
-            //     } catch (error) {
-            //         res.status(400).json({error: error.toString()});
-            //     }
-            // });
+                try {
+                    res.cookie('user', '', {maxAge: -1, httpOnly: true});
+                    res.json({status: "You have successfully logged out"});
+                } catch (error) {
+                    res.status(400).json({error: error.toString()});
+                }
+            });
 
-            // app.post('/profile', async function (req, res) {
-            //     if (req.cookies.user == null) {
-            //         res.json({
-            //             isLoggedIn: false
-            //         });
-            //         return;
-            //     }
 
-            //     try {
-            //         let user = JSON.parse(req.cookies.user.toString());
-            //         const key = user.Key;
+            app.get('/profile', async function (req, res) {
+                if (req.cookies.user == null) {
+                    res.json({
+                        isLoggedIn: false
+                    });
+                    return;
+                }
 
-            //         let result = await contract.evaluateTransaction('FindUserByKey', key);
+                try {
+                    let user = JSON.parse(req.cookies.user.toString());
+                    const key = user.Key;
 
-            //         user = JSON.parse(result.toString());
-            //         user.isLoggedIn = true;
+                    let result = await contract.evaluateTransaction('FindUserByKey', key);
 
-            //         res.json(user);
-            //     } catch (error) {
-            //         res.status(500).json({
-            //             error: `Error: ${error}`,
-            //             isLoggedIn: false,
-            //         });
-            //     }
-            // });
+                    user = JSON.parse(result.toString());
+                    user.isLoggedIn = true;
+
+                    res.json(user);
+                } catch (error) {
+                    res.status(500).json({
+                        error: `Error: ${error}`,
+                        isLoggedIn: false,
+                    });
+                }
+            });
 
 			app.post('/createOrder',async function(req,res)
 			{
@@ -344,26 +467,7 @@ async function main() {
 				}
 			});
 
-			app.post('/createDeliveryAgent',async function(req,res){
-				const {key} = req.body;
-
-				try {
-					let result = await contract.evaluateTransaction(
-						'createDeliveryAgent',
-						key
-						);
-
-					await contract.submitTransaction(	
-						'createDeliveryAgent',
-						key
-					);
-					
-					res.send(result.toString());
-
-				} catch (error) {
-					res.status(400).send(error.toString());
-				}
-			});
+			
 
 			app.post('/assignDeliveryAgent',async function(req,res){
 				const {key, orderId} = req.body;
@@ -448,6 +552,27 @@ async function main() {
 
 					await contract.submitTransaction(	
 						'getOrderStatus',
+						key
+					);
+					
+					res.send(result.toString());
+
+				} catch (error) {
+					res.status(400).send(error.toString());
+				}
+			});
+
+			app.post('/deliveryAgent',async function(req,res){
+				const {key} = req.body;
+
+				try {
+					let result = await contract.evaluateTransaction(
+						'FindUserByKey',
+						key
+						);
+
+					await contract.submitTransaction(	
+						'FindUserByKey',
 						key
 					);
 					

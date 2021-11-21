@@ -1,3 +1,4 @@
+import useUser from "../lib/useUser";
 import { Layout, Menu } from 'antd';
 import {
   DollarCircleFilled,
@@ -17,41 +18,9 @@ const { Sider } = Layout;
 
 
 
-export default function LeftSideBar(){
-
-  //   const handleSubmit = async () => {
-  //     const {email, password} = values.user;
-  //     const url = 'http://localhost:3000/logout';
-  //     const requestBody = {
-  //         email: email,
-  //         password: password,
-  //     };
-
-  //     const response = await fetch(url, {
-  //         method: 'POST',
-  //         mode: 'cors',
-  //         cache: 'no-cache',
-  //         withCredentials: true,
-  //         credentials: 'same-origin',
-  //         headers: {
-  //             'Content-Type': 'application/json'
-  //         },
-  //         body: JSON.stringify(requestBody)
-  //     });
-
-  //     const data = await response.json();
-  //     console.log(data.authenticated);
-
-
-
-      
-
-  //     if(data.authenticated==false){
-  //         window.location.href = '/';
-  //     }
-  // };
-
-  console.log("Hello from Bar");
+function LeftSideBar(){
+  useUser({redirectTo: '/login', redirectIfFound: false});
+    console.log("Hello from Bar");
     const router = useRouter();
     return(
             <Sider
@@ -81,7 +50,7 @@ export default function LeftSideBar(){
                   <Menu.Item key="5" icon={<ExclamationCircleOutlined />}>
                     Claim Dispute
                   </Menu.Item>
-                  <Menu.Item key="6">
+                  <Menu.Item key="6" onClick={ () => router.push('/logout')}>
                     Logout
                   </Menu.Item>
               </Menu>
@@ -89,3 +58,5 @@ export default function LeftSideBar(){
             </Sider>
     )
 }
+
+export default LeftSideBar;

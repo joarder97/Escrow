@@ -1,12 +1,11 @@
+import useUser from "../../lib/useUser";
 import { Form, Input, Button } from 'antd';
 import { useState } from 'react';
 import LeftSideBar from '../../components/LeftSideBarSeller.js';
 
 import styles from '../../styles/Home.module.css';
-import '../../styles/logo.module.css';
-
+import '../../styles/logo.module.css';  
 import './index';
-
 
 const layout = {
   labelCol: {
@@ -23,32 +22,39 @@ const validateMessages = {
 };
 /* eslint-enable no-template-curly-in-string */
 
-export default function sellerDeposit(){
-  const onSubmit = async (values) => {
+
+
+export default function depositSeller(){
+  useUser({redirectTo: '/login', redirectIfFound: false});
+  const [state, setState] = useState('');
+
+
+  async function onSubmit (values){
     console.log(values);
 
 
 
-    const {name, accountNumber, paymentAmount} = values.seller;
+    var Key = "tx_"+values.seller.orderId+"_"+values.seller.name+"_"+values.seller.buyerId;
 
-    let Key = 's1_o1_tx1';
-    let buyerId = 'b1';
-    let OrderId = 'o1';
+    console.log(Key);
+
 
     const url = 'http://localhost:3000/depositSeller';
 
     let requestBody = {
       key:Key,
-      sellerId: name,
-      buyerId:buyerId,
-      orderId: OrderId,
-      depositTransactionId:accountNumber,
-      depositPaymentAmount:paymentAmount,
+      sellerId: values.seller.name,
+      buyerId:values.seller.buyerId,
+      orderId: values.seller.orderId,
+      depositTransactionId: values.seller.accountNumber,
+      depositPaymentAmount: values.seller.paymentAmount,      
     };
+
+    console.log(requestBody);
 
     let response = await fetch(url, {
       method: 'POST',
-      mode: 'cors',
+      // mode: 'cors',
       cache: 'no-cache',
       credentials: 'same-origin',
       headers: {
@@ -56,83 +62,102 @@ export default function sellerDeposit(){
       },
       body: JSON.stringify(requestBody),
   });
-
-    console.log(response);
-
     let data = await response.json();
     console.log(data);
-
-    
+    setState('Successfully Deposited');
 };
   
 
   return (
-
     <div>
-
       <div>
         <LeftSideBar/>
       </div>
-
       <div className={styles.container}>
-      <div>
-          <Form {...layout} name="nest-messages" onFinish={onSubmit} validateMessages={validateMessages}>
-          <Form.Item
-            name={['seller', 'name']}
-            label="Name"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
 
-            <Input />
-          </Form.Item>
-          <Form.Item
-            name={['seller', 'accountNumber']}
-            label="Account Number"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          
-          <Form.Item
-            name={['seller', 'paymentAmount']}
-            label="Payment Amount"
-            rules={[
-              {
-                required: true,
-              },
-            ]}
-          >
-            <Input />
-          </Form.Item>
 
-          <Form.Item
-            label="PIN"
-            name="['seller', 'password']"
-            rules={[{ required: true, message: 'Please input your PIN!' }]}
-          >
-            <Input.Password />
-          </Form.Item>
 
-          <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 5 }}>
-            <Button type="primary" htmlType="submit">
-              Submit
-            </Button>
-          </Form.Item>
+      <Form {...layout} name="nest-messages" onFinish={onSubmit} validateMessages={validateMessages}>
+        
+      <Form.Item
+          name={['seller', 'orderId']}
+          label="Order Id"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
 
-        </Form>
+          <Input />
+        </Form.Item>
+        
+        <Form.Item
+          name={['seller', 'buyerId']}
+          label="Buyer ID"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name={['seller', 'name']}
+          label="Name"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+
+          <Input />
+        </Form.Item>
+        <Form.Item
+          name={['seller', 'accountNumber']}
+          label="Acc No"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+        
+        <Form.Item
+          name={['seller', 'paymentAmount']}
+          label="Amount"
+          rules={[
+            {
+              required: true,
+            },
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          label="PIN"
+          name="['seller', 'password']"
+          rules={[{ required: true, message: 'Please input your PIN!' }]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item wrapperCol={{ ...layout.wrapperCol, offset: 5 }}>
+          <Button type="primary" htmlType="submit">
+            Submit
+          </Button>
+        </Form.Item>
+          <p>{state}</p>
+      </Form>
       </div>
     </div>
-    </div>
-
-    
   );
 };
 

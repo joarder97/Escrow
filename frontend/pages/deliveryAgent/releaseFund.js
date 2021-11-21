@@ -1,4 +1,5 @@
-import { Input, Space } from 'antd';
+import useUser from "../../lib/useUser";
+import { Input, Space, Form, Button } from 'antd';
 import { useState } from 'react';
 
 import LeftSideBar from '../../components/LeftSideBarDeliveryAgent';
@@ -9,24 +10,32 @@ import './index';
 
 
 const { Search } = Input;
-
+const layout = {
+  labelCol: {
+      span: 4,
+  },
+  wrapperCol: {
+      span: 12,
+  },
+};
 
 export default function releaseFund(){
-  
-  const [orderStatus, setOrderStatus] = useState('');
 
-  const onSubmit = async (values) => {
-    console.log(values);
+  useUser({redirectTo: '/login', redirectIfFound: false});
+  
+
+
+  const handleSubmit = async (values) => {
+
+    
 
     const url = 'http://localhost:3000/releaseFund';
 
-    let key = 'o1';
-    let depositTransactionId = 'b1_o1_tx1';
 
     let requestBody = {
-      key:key,
-      depositTransactionId:depositTransactionId,
-      fundReleaseKey:values
+      key:values.fund.orderId,
+      depositTransactionId:values.fund.depositTransactionId,
+      fundReleaseKey:values.fund.fundReleaseKey,
     };
     console.log(requestBody);
     let response = await fetch(url, {
@@ -50,18 +59,36 @@ export default function releaseFund(){
     <div>
       <div><LeftSideBar/></div>
       <div className={styles.container}>
-        <Space direction="vertical">
-          <Search
-            name="releaseFund"
-            placeholder="input Confirmation Key"
-            allowClear
-            enterButton="Confirm"
-            size="large"
-            onSearch={onSubmit}
-          />
-        <p>{orderStatus}</p>
-        </Space>
-      </div>
+    <Form {...layout} name="nest-messages" onFinish={handleSubmit}>
+
+        <Form.Item
+            name={['fund', 'orderId']}
+            label="Order Id"
+        >
+            <Input/>
+        </Form.Item>
+
+        <Form.Item
+            name={['fund', 'depositTransactionId']}
+            label="Deposit Transaction Id"
+        >
+            <Input/>
+        </Form.Item>
+
+        <Form.Item
+            label="Release Fund"
+            name={['fund', 'fundReleaseKey']}
+        >
+            <Input.Password/>
+        </Form.Item>
+
+        <Form.Item wrapperCol={{...layout.wrapperCol, offset: 4}}>
+            <Button type="primary" htmlType="submit">
+                Release Fund
+            </Button>
+        </Form.Item>
+        </Form>
+    </div>
     </div>
 
 

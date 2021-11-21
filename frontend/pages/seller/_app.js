@@ -17,7 +17,7 @@ import {
 const { Search } = Input;
 
 
-import LeftSideBar from '../../components/LeftSideBarSeller';
+// import LeftSideBar from '../../components/LeftSideBarSeller';
 
 const { Header, Content, Footer } = Layout;
 
@@ -29,8 +29,7 @@ const onSearch = value => console.log(value);
 function MyApp({ Component, pageProps }) {
   return(  
           <Layout>
-            <LeftSideBar/>
-
+          
             <Layout className="site-layout" style={{ 
               marginLeft: 200,  
               position:'relative',

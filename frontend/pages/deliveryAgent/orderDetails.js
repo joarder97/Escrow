@@ -1,45 +1,56 @@
-import { Table, Tag, Space } from 'antd';
+// import useUser from "../../lib/useUser";
+// import { Table, Tag, Space } from 'antd';
 
-import LeftSideBar from '../../components/LeftSideBarDeliveryAgent';
+// import LeftSideBar from '../../components/LeftSideBarDeliveryAgent';
 
-import styles from '../../styles/Home.module.css';
-import '../../styles/logo.module.css';  
-import './index';
-
-
-const { Column, ColumnGroup } = Table;
+// import styles from '../../styles/Home.module.css';
+// import '../../styles/logo.module.css';  
+// import './index';
 
 
+// const { Column, ColumnGroup } = Table;
 
-export default function orderDetails() {
 
-    let orderId = 'o1';
-    let buyerId = 'b1';
-    let sellerId = 's1';
-    let orderDeliveryDate = '30/10/2021'; 
 
-const _data = [
-  {
-    orderId: orderId,
-    sellerId:sellerId,
-    buyerId:buyerId,
-    orderDeliveryDate:orderDeliveryDate,
+// async function orderDetails() {
 
-  },
-];
+//   useUser({redirectTo: '/login', redirectIfFound: false});
 
-return(
-    <div>
-      <div><LeftSideBar/></div>
-      <div className={styles.container}>
-      <Table dataSource={_data}>
-          <Column title="Order Id" dataIndex="orderId" key="orderId" />
-          <Column title="Seller Id" dataIndex="sellerId" key="sellerId" />
-          <Column title="Buyer Id" dataIndex="buyerId" key="buyerId" /> 
-          <Column title="Order Delivery Date" dataIndex="orderDeliveryDate" key="orderDeliveryDate" />
-        </Table>
-      </div>
-    </div>
+//   const url = 'http://localhost:3000/orderDetails';
 
-      );
-}
+//     let requestBody = {
+//       key:Key
+//     };
+
+//     console.log(requestBody);
+
+//     let response = await fetch(url, {
+//       method: 'POST',
+//       // mode: 'cors',
+//       cache: 'no-cache',
+//       credentials: 'same-origin',
+//       headers: {
+//           'Content-Type': 'application/json',
+//       },
+//       body: JSON.stringify(requestBody),
+        
+//   });
+//   let data = await response.json();
+//   console.log(data);
+
+
+// return(
+//     <div>
+//       <div><LeftSideBar/></div>
+//       <div className={styles.container}>
+//       <Table dataSource={_data}>
+
+//         </Table>
+//       </div>
+//     </div>
+
+//       );
+
+// };
+
+// export default orderDetails;

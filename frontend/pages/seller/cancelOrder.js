@@ -6,7 +6,7 @@ import LeftSideBar from '../../components/LeftSideBarSeller.js';
 
 import styles from '../../styles/Home.module.css';
 import '../../styles/logo.module.css';
-import './index';
+
 
 export default function cancelOrder() {
 
